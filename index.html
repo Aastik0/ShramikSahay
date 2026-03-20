@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shramik Sahay — Income Protection for Gig Workers</title>
+  <meta name="description" content="AI-enabled parametric income protection for food delivery partners. Automated payouts when weather disrupts your work." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- THEME TOGGLE (persistent across all screens) -->
+  <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+  <!-- SPLASH -->
+  <div id="screen-splash" class="screen active splash-screen">
+    <div class="splash-bg"></div>
+    <div class="splash-content">
+      <div class="splash-main">
+        <div class="logo-wrap animate-pop">
+          <img src="assets/logo.png" alt="Shramik Sahay Logo" class="logo-img" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\'><rect width=\'100\' height=\'100\' fill=\'%23f97316\'/><text x=\'50\' y=\'55\' font-size=\'40\' text-anchor=\'middle\' fill=\'white\'>🛡️</text></svg>'">
+        </div>
+        <h1 class="splash-title animate-up delay-1">Shramik Sahay</h1>
+        <p class="splash-tagline animate-up delay-2">Protecting the Backbone of the Gig Economy</p>
+        
+        <div class="splash-pills animate-up delay-3" style="margin-top: 10px;">
+          <span class="pill">🌧 Weather Protection</span>
+          <span class="pill">🌡 Heat Alerts</span>
+          <span class="pill">🌬 AQI Monitoring</span>
+        </div>
+      </div>
+
+      <button class="btn-primary big animate-up delay-3 full-w" onclick="navigate('screen-language')">Get Started →</button>
+    </div>
+    <div class="floating-cards">
+      <div class="float-card fc1">₹65 <small>Premium / week</small></div>
+      <div class="float-card fc2">AQI 420 <small>Trigger Active</small></div>
+      <div class="float-card fc3">TAS 82 <small>Verified</small></div>
+    </div>
+  </div>
+
+  <!-- LANGUAGE SELECTION -->
+  <div id="screen-language" class="screen">
+    <div class="screen-header">
+      <button class="back-btn" onclick="navigate('screen-splash')">←</button>
+      <span>Choose Language</span>
+    </div>
+    <div class="screen-body">
+      <h2 class="screen-title">भाषा चुनें / Select Language</h2>
+      <div class="lang-grid">
+        <button class="lang-card active" onclick="selectLang('en', this)">
+          <span class="lang-flag">🇬🇧</span>
+          <span class="lang-name">English</span>
+        </button>
+        <button class="lang-card" onclick="selectLang('hi', this)">
+          <span class="lang-flag">🇮🇳</span>
+          <span class="lang-name">हिंदी</span>
+        </button>
+        <button class="lang-card" onclick="selectLang('ta', this)">
+          <span class="lang-flag">🇮🇳</span>
+          <span class="lang-name">தமிழ்</span>
+        </button>
+        <button class="lang-card" onclick="selectLang('te', this)">
+          <span class="lang-flag">🇮🇳</span>
+          <span class="lang-name">తెలుగు</span>
+        </button>
+        <button class="lang-card" onclick="selectLang('kn', this)">
+          <span class="lang-flag">🇮🇳</span>
+          <span class="lang-name">ಕನ್ನಡ</span>
+        </button>
+        <button class="lang-card" onclick="selectLang('bn', this)">
+          <span class="lang-flag">🇮🇳</span>
+          <span class="lang-name">বাংলা</span>
+        </button>
+      </div>
+      <button class="btn-primary full-w" id="lang-next-btn" onclick="navigate('screen-register')">Continue →</button>
+    </div>
+  </div>
+
+  <!-- REGISTRATION -->
+  <div id="screen-register" class="screen">
+    <div class="screen-header">
+      <button class="back-btn" onclick="navigate('screen-language')">←</button>
+      <span id="txt-register">Registration</span>
+    </div>
+    <div class="screen-body">
+      <div class="step-indicator">
+        <div class="step active">1</div><div class="step-line"></div>
+        <div class="step">2</div><div class="step-line"></div>
+        <div class="step">3</div>
+      </div>
+      <h2 class="screen-title" id="txt-personal-info">Personal Information</h2>
+      <div class="form-group">
+        <label id="txt-full-name">Full Name</label>
+        <input type="text" id="reg-name" placeholder="Arjun Kumar" />
+      </div>
+      <div class="form-group">
+        <label id="txt-phone">Phone Number</label>
+        <div class="input-prefix"><span>+91</span><input type="tel" id="reg-phone" placeholder="9876543210" maxlength="10" /></div>
+      </div>
+      <div class="form-group">
+        <label id="txt-platform">Delivery Platform</label>
+        <div class="select-grid">
+          <button class="platform-btn active" onclick="selectPlatform(this)">Zomato</button>
+          <button class="platform-btn" onclick="selectPlatform(this)">Swiggy</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label id="txt-city">City</label>
+        <select id="reg-city" onchange="updateCityWarning()">
+          <option value="bengaluru">Bengaluru</option>
+          <option value="delhi">Delhi</option>
+          <option value="mumbai">Mumbai</option>
+          <option value="chennai">Chennai</option>
+          <option value="ahmedabad">Ahmedabad</option>
+        </select>
+        <div class="city-note" id="city-note">🌧 Flood zone city — higher rain tolerance thresholds apply</div>
+      </div>
+      <div class="form-group">
+        <label id="txt-weekly-income">Weekly Income (₹)</label>
+        <input type="number" id="reg-income" placeholder="6200" />
+      </div>
+      <button class="btn-primary full-w" onclick="navigate('screen-plan')">Next: Select Plan →</button>
+    </div>
+  </div>
+
+  <!-- PLAN SELECTION -->
+  <div id="screen-plan" class="screen">
+    <div class="screen-header">
+      <button class="back-btn" onclick="navigate('screen-register')">←</button>
+      <span id="txt-plan-selection">Plan Selection</span>
+    </div>
+    <div class="screen-body">
+      <div class="step-indicator">
+        <div class="step done">✓</div><div class="step-line active"></div>
+        <div class="step active">2</div><div class="step-line"></div>
+        <div class="step">3</div>
+      </div>
+      <h2 class="screen-title" id="txt-choose-plan">Choose Your Protection Plan</h2>
+      <div class="plan-note">Partial protection (20–30%) prevents misuse and keeps premiums low.</div>
+      <div class="plan-cards">
+        <div class="plan-card" onclick="selectPlan(this, 3000, 40)">
+          <div class="plan-badge">Basic</div>
+          <div class="plan-amount">₹3,000</div>
+          <div class="plan-label">Weekly Coverage</div>
+          <div class="plan-premium">₹40 / week</div>
+          <ul class="plan-features">
+            <li>✓ Rainfall trigger</li>
+            <li>✓ AQI trigger</li>
+            <li>✓ UPI payout</li>
+          </ul>
+        </div>
+        <div class="plan-card recommended" onclick="selectPlan(this, 5000, 65)">
+          <div class="plan-badge">⭐ Popular</div>
+          <div class="plan-amount">₹5,000</div>
+          <div class="plan-label">Weekly Coverage</div>
+          <div class="plan-premium">₹65 / week</div>
+          <ul class="plan-features">
+            <li>✓ All Basic triggers</li>
+            <li>✓ Temperature trigger</li>
+            <li>✓ Priority processing</li>
+          </ul>
+        </div>
+        <div class="plan-card" onclick="selectPlan(this, 8000, 95)">
+          <div class="plan-badge">Premium</div>
+          <div class="plan-amount">₹8,000</div>
+          <div class="plan-label">Weekly Coverage</div>
+          <div class="plan-premium">₹95 / week</div>
+          <ul class="plan-features">
+            <li>✓ All triggers</li>
+            <li>✓ Storm alerts</li>
+            <li>✓ Instant payout</li>
+          </ul>
+        </div>
+      </div>
+      <div class="selected-plan-summary" id="plan-summary" style="display:none">
+        <div class="summary-row"><span>Coverage</span><span id="summary-coverage">—</span></div>
+        <div class="summary-row"><span>Weekly Premium</span><span id="summary-premium">—</span></div>
+        <div class="summary-row"><span>Protection Rate</span><span>~25% of weekly income</span></div>
+      </div>
+      <button class="btn-primary full-w" id="plan-next-btn" disabled onclick="navigate('screen-dashboard')">Activate Protection →</button>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="screen-dashboard" class="screen">
+    <div class="dashboard-topbar">
+      <div class="topbar-left">
+        <img src="assets/logo.png" alt="logo" class="topbar-logo" />
+        <div>
+          <div class="topbar-name" id="d-name">Arjun Kumar</div>
+          <div class="topbar-status">🟢 Protected</div>
+        </div>
+      </div>
+      <button class="icon-btn" onclick="navigate('screen-profile')">👤</button>
+    </div>
+
+    <div class="dashboard-body">
+      <!-- Environmental Status -->
+      <div class="section-label">LIVE ENVIRONMENTAL STATUS — <span id="d-city-label">Bengaluru</span></div>
+      <div class="env-cards">
+        <div class="env-card" id="env-rain">
+          <div class="env-icon">🌧</div>
+          <div class="env-val" id="rain-val">12 mm</div>
+          <div class="env-label">Rainfall</div>
+          <div class="env-threshold">Trigger: >50mm</div>
+          <div class="env-status safe" id="rain-status">Safe</div>
+        </div>
+        <div class="env-card" id="env-temp">
+          <div class="env-icon">🌡</div>
+          <div class="env-val" id="temp-val">31°C</div>
+          <div class="env-label">Temperature</div>
+          <div class="env-threshold">Trigger: >42°C</div>
+          <div class="env-status safe" id="temp-status">Safe</div>
+        </div>
+        <div class="env-card" id="env-aqi">
+          <div class="env-icon">💨</div>
+          <div class="env-val" id="aqi-val">182</div>
+          <div class="env-label">AQI</div>
+          <div class="env-threshold">Trigger: >400</div>
+          <div class="env-status safe" id="aqi-status">Safe</div>
+        </div>
+        <div class="env-card" id="env-storm">
+          <div class="env-icon">⚡</div>
+          <div class="env-val" id="storm-val">None</div>
+          <div class="env-label">Storm Alert</div>
+          <div class="env-threshold">Any active alert</div>
+          <div class="env-status safe" id="storm-status">Safe</div>
+        </div>
+      </div>
+
+      <!-- Week Summary -->
+      <div class="section-label">WEEK SUMMARY</div>
+      <div class="week-card">
+        <div class="week-stat">
+          <div class="week-val">₹<span id="w-expected">6,200</span></div>
+          <div class="week-label">Expected Income</div>
+        </div>
+        <div class="week-divider"></div>
+        <div class="week-stat">
+          <div class="week-val protected">₹<span id="w-protected">5,000</span></div>
+          <div class="week-label">Protected Amount</div>
+        </div>
+        <div class="week-divider"></div>
+        <div class="week-stat">
+          <div class="week-val premium">₹<span id="w-premium">65</span></div>
+          <div class="week-label">Premium Paid</div>
+        </div>
+      </div>
+
+      <!-- TAS Score -->
+      <div class="section-label">TRIP AUTHENTICITY SCORE (TAS)</div>
+      <div class="tas-card">
+        <div class="tas-ring-wrap">
+          <svg class="tas-ring" viewBox="0 0 120 120">
+            <circle class="ring-bg" cx="60" cy="60" r="50"/>
+            <circle class="ring-fill" id="tas-ring-fill" cx="60" cy="60" r="50" stroke-dasharray="314" stroke-dashoffset="60"/>
+          </svg>
+          <div class="tas-center">
+            <div class="tas-score" id="tas-score">82</div>
+            <div class="tas-label-s">TAS</div>
+          </div>
+        </div>
+        <div class="tas-breakdown">
+          <div class="tas-row"><span>Movement</span> <div class="tas-bar"><div class="tas-fill" style="width:88%"></div></div> <span>88</span></div>
+          <div class="tas-row"><span>Activity</span> <div class="tas-bar"><div class="tas-fill" style="width:79%"></div></div> <span>79</span></div>
+          <div class="tas-row"><span>Network</span> <div class="tas-bar"><div class="tas-fill" style="width:85%"></div></div> <span>85</span></div>
+          <div class="tas-row"><span>Behavior</span> <div class="tas-bar"><div class="tas-fill" style="width:77%"></div></div> <span>77</span></div>
+          <div class="tas-row"><span>Proof</span> <div class="tas-bar"><div class="tas-fill" style="width:80%"></div></div> <span>80</span></div>
+        </div>
+        <div class="tas-verdict" id="tas-verdict">✅ Instant Payout Eligible</div>
+      </div>
+
+      <!-- Simulate Trigger -->
+      <div class="section-label">TRIGGER SIMULATOR</div>
+      <div class="simulator-card">
+        <p class="sim-desc">Simulate environmental triggers to see how the payout system responds.</p>
+        <div class="sim-controls">
+          <button class="sim-btn" onclick="simulate('rain')">🌧 Heavy Rain</button>
+          <button class="sim-btn" onclick="simulate('heat')">🌡 Heatwave</button>
+          <button class="sim-btn" onclick="simulate('aqi')">💨 Toxic AQI</button>
+          <button class="sim-btn" onclick="simulate('storm')">⚡ Storm Alert</button>
+        </div>
+        <button class="sim-reset" onclick="resetSimulation()">Reset to Normal</button>
+      </div>
+
+      <!-- Payout Status -->
+      <div class="section-label">PAYOUT STATUS</div>
+      <div class="payout-card" id="payout-card">
+        <div class="payout-status-row">
+          <div class="payout-icon" id="payout-icon">🔵</div>
+          <div>
+            <div class="payout-title" id="payout-title">Monitoring Active</div>
+            <div class="payout-subtitle" id="payout-subtitle">No trigger events this week</div>
+          </div>
+        </div>
+        <div class="payout-amount-row" id="payout-amount-row" style="display:none">
+          <span>Payout Amount</span>
+          <span class="payout-amount" id="payout-amount">₹0</span>
+        </div>
+      </div>
+
+      <!-- Nav -->
+      <div class="bottom-nav">
+        <button class="nav-item active" onclick="navigate('screen-dashboard')">
+          <span>🏠</span><span>Home</span>
+        </button>
+        <button class="nav-item" onclick="navigate('screen-history')">
+          <span>📋</span><span>History</span>
+        </button>
+        <button class="nav-item" onclick="navigate('screen-profile')">
+          <span>👤</span><span>Profile</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTORY -->
+  <div id="screen-history" class="screen">
+    <div class="screen-header">
+      <button class="back-btn" onclick="navigate('screen-dashboard')">←</button>
+      <span>Payout History</span>
+    </div>
+    <div class="screen-body">
+      <div class="history-summary">
+        <div class="h-stat"><div class="h-val">₹1,850</div><div class="h-label">Total Earned</div></div>
+        <div class="h-stat"><div class="h-val">4</div><div class="h-label">Events</div></div>
+        <div class="h-stat"><div class="h-val">100%</div><div class="h-label">Success Rate</div></div>
+      </div>
+      <div class="history-list">
+        <div class="history-item">
+          <div class="hi-left">
+            <div class="hi-icon">🌧</div>
+            <div>
+              <div class="hi-title">Heavy Rainfall — Bengaluru</div>
+              <div class="hi-date">Mar 12, 2026 · Rainfall 74mm</div>
+              <div class="hi-tas">TAS: 81 · Instant Payout</div>
+            </div>
+          </div>
+          <div class="hi-right">
+            <div class="hi-amount">+₹650</div>
+            <div class="hi-badge success">Paid</div>
+          </div>
+        </div>
+        <div class="history-item">
+          <div class="hi-left">
+            <div class="hi-icon">💨</div>
+            <div>
+              <div class="hi-title">Toxic AQI — Bengaluru</div>
+              <div class="hi-date">Feb 28, 2026 · AQI 428</div>
+              <div class="hi-tas">TAS: 74 · Instant Payout</div>
+            </div>
+          </div>
+          <div class="hi-right">
+            <div class="hi-amount">+₹500</div>
+            <div class="hi-badge success">Paid</div>
+          </div>
+        </div>
+        <div class="history-item">
+          <div class="hi-left">
+            <div class="hi-icon">🌡</div>
+            <div>
+              <div class="hi-title">Heatwave — Bengaluru</div>
+              <div class="hi-date">Feb 14, 2026 · Temp 44°C</div>
+              <div class="hi-tas">TAS: 55 · Partial Payout</div>
+            </div>
+          </div>
+          <div class="hi-right">
+            <div class="hi-amount">+₹400</div>
+            <div class="hi-badge partial">Partial</div>
+          </div>
+        </div>
+        <div class="history-item">
+          <div class="hi-left">
+            <div class="hi-icon">⚡</div>
+            <div>
+              <div class="hi-title">Storm Alert — Bengaluru</div>
+              <div class="hi-date">Jan 30, 2026 · IMD Red Alert</div>
+              <div class="hi-tas">TAS: 89 · Instant Payout</div>
+            </div>
+          </div>
+          <div class="hi-right">
+            <div class="hi-amount">+₹300</div>
+            <div class="hi-badge success">Paid</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <button class="nav-item" onclick="navigate('screen-dashboard')"><span>🏠</span><span>Home</span></button>
+      <button class="nav-item active" onclick="navigate('screen-history')"><span>📋</span><span>History</span></button>
+      <button class="nav-item" onclick="navigate('screen-profile')"><span>👤</span><span>Profile</span></button>
+    </div>
+  </div>
+
+  <!-- PROFILE -->
+  <div id="screen-profile" class="screen">
+    <div class="screen-header">
+      <button class="back-btn" onclick="navigate('screen-dashboard')">←</button>
+      <span>My Profile</span>
+    </div>
+    <div class="screen-body">
+      <div class="profile-hero">
+        <div class="profile-avatar">AK</div>
+        <div class="profile-name" id="p-name">Arjun Kumar</div>
+        <div class="profile-sub">🟢 Active · 🟠 Zomato · Bengaluru</div>
+      </div>
+      <div class="profile-section">
+        <div class="ps-title">Protection Plan</div>
+        <div class="ps-row"><span>Coverage</span><span id="p-coverage">₹5,000 / week</span></div>
+        <div class="ps-row"><span>Premium</span><span id="p-premium">₹65 / week</span></div>
+        <div class="ps-row"><span>Status</span><span class="status-active">Active</span></div>
+      </div>
+      <div class="profile-section">
+        <div class="ps-title">Income Profile</div>
+        <div class="ps-row"><span>Weekly Avg</span><span>₹6,200</span></div>
+        <div class="ps-row"><span>AI Predicted</span><span>₹6,050</span></div>
+        <div class="ps-row"><span>Risk Class</span><span>Moderate</span></div>
+      </div>
+      <div class="profile-section">
+        <div class="ps-title">Anti-Spoofing Status</div>
+        <div class="gps-tracker">
+          <div class="gps-dot"></div>
+          <span>GPS Active — Bengaluru, Karnataka</span>
+        </div>
+        <div class="ps-row"><span>Periodic GPS Checks</span><span>Every 4 min</span></div>
+        <div class="ps-row"><span>Speed Consistency</span><span>✅ Normal</span></div>
+        <div class="ps-row"><span>Crowd Pattern</span><span>✅ No anomaly</span></div>
+        <div class="ps-row"><span>Behavioral Fingerprint</span><span>✅ Matched</span></div>
+      </div>
+      <div class="profile-section">
+        <div class="ps-title">UPI Payment</div>
+        <div class="ps-row"><span>UPI ID</span><span>arjun@upi</span></div>
+        <div class="ps-row"><span>Bank</span><span>SBI</span></div>
+      </div>
+      <button class="btn-outline full-w" onclick="navigate('screen-splash')">Log Out</button>
+    </div>
+    <div class="bottom-nav">
+      <button class="nav-item" onclick="navigate('screen-dashboard')"><span>🏠</span><span>Home</span></button>
+      <button class="nav-item" onclick="navigate('screen-history')"><span>📋</span><span>History</span></button>
+      <button class="nav-item active" onclick="navigate('screen-profile')"><span>👤</span><span>Profile</span></button>
+    </div>
+  </div>
+
+  <!-- PAYOUT MODAL -->
+  <div id="payout-modal" class="modal-overlay" style="display:none">
+    <div class="modal-box">
+      <div class="modal-icon" id="modal-icon">🎉</div>
+      <div class="modal-title" id="modal-title">Trigger Event Detected!</div>
+      <div class="modal-body" id="modal-body">Heavy rainfall detected (74mm). Your payout is being processed.</div>
+      <div class="modal-amount" id="modal-amount">₹650</div>
+      <div class="modal-sub" id="modal-sub">via UPI · arjun@upi</div>
+      <div class="modal-progress">
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        <div class="modal-step" id="modal-step">Verifying TAS...</div>
+      </div>
+      <button class="btn-primary" onclick="closeModal()">Done ✓</button>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
