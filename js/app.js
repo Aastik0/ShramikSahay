@@ -423,6 +423,7 @@ async function selectPlan(el, coverage, basePremium) {
     ? await calculateMLPremiumLR(tier, city, selectedZone, selectedPlatform, liveWeatherForecast)
     : calculateMLPremium(tier, city, selectedZone, selectedPlatform, liveWeatherForecast);
   selectedPlan  = { coverage, premium: premiumResult.finalPremium, tier };
+  localStorage.setItem('shramik_plan', JSON.stringify(selectedPlan));
 
   // Update summary
   document.getElementById('plan-summary').style.display = 'block';
@@ -564,6 +565,19 @@ function updateTASRing(score) {
 
 // ── TRIGGER SIMULATION ────────────────────────
 function simulate(type) {
+  // API BLOCKER - Validate real conditions before payout if backend is live!
+  if (type === 'rain') {
+    const rainTxt = document.getElementById('rain-val')?.textContent || '0';
+    const realRain = parseFloat(rainTxt); // Parses "12 mm 🔴" safely to 12
+    const source = (document.getElementById('poll-status')?.textContent || '').toLowerCase();
+    
+    // Only block if we have successfully queried a real API (no mock suffix)
+    if (!rainTxt.includes('🔴') && realRain < 35 && window.location.hostname !== '') {
+      alert(`❌ IRDAI Validation Failed:\nLive API reports only ${realRain}mm rain in your cluster. Needs 35mm for payout.`);
+      return;
+    }
+  }
+
   activeSimulation = type;
   document.querySelectorAll('.sim-btn').forEach(b => b.classList.remove('active'));
   if (event && event.target) event.target.classList.add('active');
@@ -978,6 +992,15 @@ document.addEventListener('DOMContentLoaded', () => {
   initTheme();
   injectSVGGradient();
   updateCityWarning();
+
+  // Handle Session Persistence
+  const savedPlan = localStorage.getItem('shramik_plan');
+  if (savedPlan) {
+    selectedPlan = JSON.parse(savedPlan);
+    setTimeout(() => {
+      navigate('screen-dashboard');
+    }, 100);
+  }
 
   // Seed initial anti-spoof log
   addAntiSpoofLog('✅', 'System initialised — all 6 TAS signals active');
