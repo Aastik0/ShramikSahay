@@ -1,6 +1,7 @@
 import math
 import os
 import requests
+import certifi
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
@@ -21,7 +22,7 @@ CORS(app)
 app.config["MONGO_URI"] = os.getenv("MONGO_URI", "mongodb://localhost:27017/shramik")
 if MONGO_AVAILABLE and os.getenv("MONGO_URI") != "mongodb+srv://<username>:<password>@cluster0.mongodb.net/shramik?retryWrites=true&w=majority":
     try:
-        mongo = PyMongo(app)
+        mongo = PyMongo(app, tlsCAFile=certifi.where())
         db = mongo.db
         print("✅ MongoDB Connected")
     except Exception as e:
