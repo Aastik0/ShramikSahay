@@ -446,6 +446,40 @@ async function selectPlan(el, coverage, basePremium) {
   renderMLBreakdown(premiumResult);
 }
 
+async function activatePolicy() {
+  if (!selectedPlan) return;
+  const btn = document.getElementById('plan-next-btn');
+  if (btn) btn.textContent = 'Activating...';
+  
+  const payload = {
+    name: document.getElementById('reg-name')?.value || 'Guest Worker',
+    phone: document.getElementById('reg-phone')?.value || 'N/A',
+    city: getCurrentCity(),
+    plan: selectedPlan.tier,
+    premium: selectedPlan.premium,
+    coverage: selectedPlan.coverage,
+    timestamp: new Date().toISOString()
+  };
+
+  try {
+    const BACKEND = (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost') ? 'http://127.0.0.1:5000' : '';
+    const res = await fetch(`${BACKEND}/api/policies/create`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (res.ok) {
+      const data = await res.json();
+      console.log("✅ Saved to backend DB:", data);
+    }
+  } catch(e) {
+    console.error("Save to MongoDB failed, continuing to dashboard.", e);
+  }
+
+  if (btn) btn.textContent = 'Activate Protection →';
+  navigate('screen-dashboard');
+}
+
 // ── DASHBOARD ────────────────────────────────
 function initDashboard() {
   const name = document.getElementById('reg-name')?.value || 'Arjun Kumar';
