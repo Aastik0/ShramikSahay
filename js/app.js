@@ -610,25 +610,32 @@ function simulate(type) {
   // API BLOCKERS - Validate real conditions before payout if backend is live!
   if (type === 'rain') {
     if (!isLive('rain-val')) {
-      alert(`⚠️ Cannot Verify Real Rain:\nAPI Key is invalid or missing. Running in MOCK mode...`);
+      alert(`⚠️ Cannot Verify Real Rain:\nAPI Key is invalid or missing. Simulation Blocked.`);
+      return;
     } else if (getVal('rain-val') < 35) {
       alert(`❌ IRDAI Validation Failed:\nLive API reports only ${getVal('rain-val')}mm rain. Needs 35mm for payout.`);
       return;
     }
   } else if (type === 'temp') {
     if (!isLive('temp-val')) {
-      alert(`⚠️ Cannot Verify Real Temp:\nAPI Key is invalid or missing. Running in MOCK mode...`);
+      alert(`⚠️ Cannot Verify Real Temp:\nAPI Key is invalid or missing. Simulation Blocked.`);
+      return;
     } else if (getVal('temp-val') < 42) {
       alert(`❌ IRDAI Validation Failed:\nLive API reports only ${getVal('temp-val')}°C. Needs 42°C for payout.`);
       return;
     }
   } else if (type === 'aqi') {
     if (!isLive('aqi-val')) {
-      alert(`⚠️ Cannot Verify Real AQI:\nAPI Key is invalid or missing. Running in MOCK mode...`);
+      alert(`⚠️ Cannot Verify Real AQI:\nAPI Key is invalid or missing. Simulation Blocked.`);
+      return;
     } else if (getVal('aqi-val') < 300) {
       alert(`❌ IRDAI Validation Failed:\nLive API reports only ${getVal('aqi-val')} AQI. Needs 300 AQI for payout.`);
       return;
     }
+  } else if (['storm', 'cyclone', 'civil'].includes(type)) {
+    // Unintegrated Hackathon buttons
+    alert(`❌ IRDAI Validation Failed:\nLive API Integration for ${type.toUpperCase()} is not yet available in V1. Payout blocked in production mode.`);
+    return;
   }
 
   activeSimulation = type;
@@ -636,11 +643,6 @@ function simulate(type) {
   if (event && event.target) event.target.classList.add('active');
 
   const scenario = SIMULATIONS[type];
-  
-  // Only overwrite environmental cards if we are entirely in offline mock mode
-  if (!isLive('rain-val') && !isLive('temp-val')) {
-    updateEnvCards(scenario);
-  }
 
   const tas = Math.floor(55 + Math.random() * 35);
   updateTASRing(tas);
