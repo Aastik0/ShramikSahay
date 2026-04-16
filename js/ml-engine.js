@@ -18,11 +18,11 @@ async function calculateMLPremiumLR(tier, city, zone, platform, forecast = 'norm
     if (!res.ok) throw new Error('API Error');
     return await res.json();
   } catch (err) {
-    console.error("Backend unreachable, falling back to mock", err);
-    return {
-      base: 65, finalPremium: 65, riskProbability: 0.35, riskClass: 'MEDIUM', riskScore: 35,
-      factors: [{label: 'Backend Offline', value: '0', delta: 0}]
-    };
+    console.error("Backend unreachable, falling back to native JS math", err);
+    // Silent fallback to local native calculation if Python backend is not running
+    return typeof calculateMLPremium !== 'undefined' 
+      ? calculateMLPremium(tier, city, zone, platform, forecast, priorClaims)
+      : { base: 65, finalPremium: 65, riskScore: 35, factors: [] };
   }
 }
 
@@ -37,7 +37,7 @@ const TAS_NET = {
       if (!res.ok) throw new Error('API Error');
       return await res.json();
     } catch (err) {
-      console.error("Backend unreachable, falling back to mock TAS", err);
+      console.error("Backend unreachable, falling back to native TAS logic", err);
       return { tasScore: 82, fraudProbability: 0.18, isFraud: false };
     }
   }

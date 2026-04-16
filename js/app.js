@@ -788,10 +788,10 @@ const TAS_SIGNALS = [
 let tasScores = { gps: 88, speed: 92, tod: 79, peer: 85, biometric: 80, order: 77 };
 let fraudDetected = false;
 
-function initAntiSpoof() {
+async function initAntiSpoof() {
   // Use TAS Neural Net to compute initial inference
   if (typeof TAS_NET !== 'undefined') {
-    const result = TAS_NET.infer(tasScores);
+    const result = await TAS_NET.infer(tasScores);
     tasScores = { gps: 88, speed: 92, tod: 79, peer: 85, biometric: 80, order: 77 };
     const composite = document.getElementById('tas-composite');
     if (composite) composite.textContent = result.tasScore;
