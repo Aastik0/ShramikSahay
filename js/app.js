@@ -364,11 +364,15 @@ function initPlanScreen() {
   refreshPremiumPreview();
 }
 
-function refreshPremiumPreview() {
+async function refreshPremiumPreview() {
   const city     = getCurrentCity();
   const tier     = selectedPlan ? (selectedPlan.premium <= 40 ? 'basic' : selectedPlan.premium <= 65 ? 'standard' : 'premium') : 'standard';
+  
+  const container = document.getElementById('ml-breakdown');
+  if (container) container.innerHTML = '<div class="ml-loading">🤖 Fetching AI premium from Server...</div>';
+
   premiumResult  = (typeof calculateMLPremiumLR !== 'undefined')
-    ? calculateMLPremiumLR(tier, city, selectedZone, selectedPlatform, liveWeatherForecast)
+    ? await calculateMLPremiumLR(tier, city, selectedZone, selectedPlatform, liveWeatherForecast)
     : calculateMLPremium(tier, city, selectedZone, selectedPlatform, liveWeatherForecast);
   renderMLBreakdown(premiumResult);
 }
@@ -405,14 +409,18 @@ function renderMLBreakdown(result) {
 }
 
 
-function selectPlan(el, coverage, basePremium) {
+async function selectPlan(el, coverage, basePremium) {
   document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
 
   const city  = getCurrentCity();
   const tier  = basePremium <= 40 ? 'basic' : basePremium <= 65 ? 'standard' : 'premium';
+  
+  const container = document.getElementById('ml-breakdown');
+  if (container) container.innerHTML = '<div class="ml-loading">🤖 Fetching AI premium from Server...</div>';
+
   premiumResult = (typeof calculateMLPremiumLR !== 'undefined')
-    ? calculateMLPremiumLR(tier, city, selectedZone, selectedPlatform, liveWeatherForecast)
+    ? await calculateMLPremiumLR(tier, city, selectedZone, selectedPlatform, liveWeatherForecast)
     : calculateMLPremium(tier, city, selectedZone, selectedPlatform, liveWeatherForecast);
   selectedPlan  = { coverage, premium: premiumResult.finalPremium, tier };
 
@@ -425,8 +433,10 @@ function selectPlan(el, coverage, basePremium) {
   document.getElementById('plan-next-btn').removeAttribute('disabled');
 
   // Update dashboard values
-  document.getElementById('w-protected').textContent = coverage.toLocaleString('en-IN');
-  document.getElementById('w-premium').textContent   = premiumResult.finalPremium;
+  const wprot = document.getElementById('w-protected');
+  if (wprot) wprot.textContent = coverage.toLocaleString('en-IN');
+  const wprem = document.getElementById('w-premium');
+  if (wprem) wprem.textContent = premiumResult.finalPremium;
 
   // Update plan price display in card
   el.querySelector('.plan-premium').textContent = `₹${premiumResult.finalPremium} / week`;
