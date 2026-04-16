@@ -482,15 +482,16 @@ async function activatePolicy() {
 
 // ── DASHBOARD ────────────────────────────────
 function initDashboard() {
-  const name = document.getElementById('reg-name')?.value || 'Arjun Kumar';
+  const profileStr = localStorage.getItem('shramik_profile');
+  const profile = profileStr ? JSON.parse(profileStr) : null;
+
+  const name = profile ? profile.name : (document.getElementById('reg-name')?.value || 'Arjun Kumar');
   document.getElementById('d-name').textContent = name;
   document.getElementById('p-name').textContent = name;
 
-  const cityEl = document.getElementById('reg-city');
-  if (cityEl) {
-    const cityMap = { bengaluru:'Bengaluru', delhi:'Delhi', mumbai:'Mumbai', chennai:'Chennai', ahmedabad:'Ahmedabad' };
-    document.getElementById('d-city-label').textContent = cityMap[cityEl.value] || 'Bengaluru';
-  }
+  let cityVal = profile ? profile.city : (document.getElementById('reg-city')?.value || 'bengaluru');
+  const cityMap = { bengaluru:'Bengaluru', delhi:'Delhi', mumbai:'Mumbai', chennai:'Chennai', ahmedabad:'Ahmedabad' };
+  document.getElementById('d-city-label').textContent = cityMap[cityVal] || 'Bengaluru';
 
   // Dynamic IRDAI / Policy Numbers based on input
   const phoneVal = document.getElementById('reg-phone')?.value || '9876543210';
@@ -603,10 +604,9 @@ function simulate(type) {
   if (type === 'rain') {
     const rainTxt = document.getElementById('rain-val')?.textContent || '0';
     const realRain = parseFloat(rainTxt); // Parses "12 mm 🔴" safely to 12
-    const source = (document.getElementById('poll-status')?.textContent || '').toLowerCase();
     
-    // Only block if we have successfully queried a real API (no mock suffix)
-    if (!rainTxt.includes('🔴') && realRain < 35 && window.location.hostname !== '') {
+    // 🔴 indicates a successful query to a live external API (OpenWeather)
+    if (rainTxt.includes('🔴') && realRain < 35 && window.location.hostname !== '') {
       alert(`❌ IRDAI Validation Failed:\nLive API reports only ${realRain}mm rain in your cluster. Needs 35mm for payout.`);
       return;
     }
