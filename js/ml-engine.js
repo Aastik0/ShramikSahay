@@ -88,7 +88,7 @@ function renderApiLog() {
 async function refreshLiveData() {
   const btn = document.getElementById('fetch-live-btn');
   if (btn) { btn.textContent = '⟳ Fetching...'; btn.disabled = true; }
-  const city = document.getElementById('reg-city')?.value || 'bengaluru';
+  const city = (typeof getCurrentCity !== 'undefined') ? getCurrentCity() : (document.getElementById('reg-city')?.value || 'bengaluru');
   
   const [weather, aqi] = await Promise.all([fetchLiveWeather(city), fetchLiveAQI(city)]);
 

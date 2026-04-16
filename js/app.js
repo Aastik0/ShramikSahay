@@ -184,6 +184,10 @@ const CITY_THRESHOLDS = {
 };
 
 function getCurrentCity() {
+  const profileStr = localStorage.getItem('shramik_profile');
+  if (profileStr) {
+    try { return JSON.parse(profileStr).city || 'bengaluru'; } catch(e){}
+  }
   return document.getElementById('reg-city')?.value || 'bengaluru';
 }
 
