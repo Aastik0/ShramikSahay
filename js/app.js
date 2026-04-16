@@ -609,8 +609,10 @@ function simulate(type) {
     const rainTxt = document.getElementById('rain-val')?.textContent || '0';
     const realRain = parseFloat(rainTxt); // Parses "12 mm 🔴" safely to 12
     
-    // 🔴 indicates a successful query to a live external API (OpenWeather)
-    if (rainTxt.includes('🔴') && realRain < 35 && window.location.hostname !== '') {
+    // Check if the API key is missing/invalid (no red dot means mock fallback used)
+    if (!rainTxt.includes('🔴')) {
+      alert(`⚠️ Cannot Verify Real Rain:\nOpenWeather API Key is invalid or missing in your backend local .env file. Running in MOCK mode...`);
+    } else if (realRain < 35) {
       alert(`❌ IRDAI Validation Failed:\nLive API reports only ${realRain}mm rain in your cluster. Needs 35mm for payout.`);
       return;
     }
@@ -621,7 +623,11 @@ function simulate(type) {
   if (event && event.target) event.target.classList.add('active');
 
   const scenario = SIMULATIONS[type];
-  updateEnvCards(scenario);
+  
+  // Only overwrite the environmental cards if we are in Mock mode!
+  if (!(type === 'rain' && document.getElementById('rain-val')?.textContent.includes('🔴'))) {
+    updateEnvCards(scenario);
+  }
 
   const tas = Math.floor(55 + Math.random() * 35);
   updateTASRing(tas);
