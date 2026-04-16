@@ -604,16 +604,29 @@ function updateTASRing(score) {
 
 // ── TRIGGER SIMULATION ────────────────────────
 function simulate(type) {
-  // API BLOCKER - Validate real conditions before payout if backend is live!
+  const isLive = (id) => (document.getElementById(id)?.textContent || '').includes('🔴');
+  const getVal = (id) => parseFloat(document.getElementById(id)?.textContent || '0');
+
+  // API BLOCKERS - Validate real conditions before payout if backend is live!
   if (type === 'rain') {
-    const rainTxt = document.getElementById('rain-val')?.textContent || '0';
-    const realRain = parseFloat(rainTxt); // Parses "12 mm 🔴" safely to 12
-    
-    // Check if the API key is missing/invalid (no red dot means mock fallback used)
-    if (!rainTxt.includes('🔴')) {
-      alert(`⚠️ Cannot Verify Real Rain:\nOpenWeather API Key is invalid or missing in your backend local .env file. Running in MOCK mode...`);
-    } else if (realRain < 35) {
-      alert(`❌ IRDAI Validation Failed:\nLive API reports only ${realRain}mm rain in your cluster. Needs 35mm for payout.`);
+    if (!isLive('rain-val')) {
+      alert(`⚠️ Cannot Verify Real Rain:\nAPI Key is invalid or missing. Running in MOCK mode...`);
+    } else if (getVal('rain-val') < 35) {
+      alert(`❌ IRDAI Validation Failed:\nLive API reports only ${getVal('rain-val')}mm rain. Needs 35mm for payout.`);
+      return;
+    }
+  } else if (type === 'temp') {
+    if (!isLive('temp-val')) {
+      alert(`⚠️ Cannot Verify Real Temp:\nAPI Key is invalid or missing. Running in MOCK mode...`);
+    } else if (getVal('temp-val') < 42) {
+      alert(`❌ IRDAI Validation Failed:\nLive API reports only ${getVal('temp-val')}°C. Needs 42°C for payout.`);
+      return;
+    }
+  } else if (type === 'aqi') {
+    if (!isLive('aqi-val')) {
+      alert(`⚠️ Cannot Verify Real AQI:\nAPI Key is invalid or missing. Running in MOCK mode...`);
+    } else if (getVal('aqi-val') < 300) {
+      alert(`❌ IRDAI Validation Failed:\nLive API reports only ${getVal('aqi-val')} AQI. Needs 300 AQI for payout.`);
       return;
     }
   }
@@ -624,8 +637,8 @@ function simulate(type) {
 
   const scenario = SIMULATIONS[type];
   
-  // Only overwrite the environmental cards if we are in Mock mode!
-  if (!(type === 'rain' && document.getElementById('rain-val')?.textContent.includes('🔴'))) {
+  // Only overwrite environmental cards if we are entirely in offline mock mode
+  if (!isLive('rain-val') && !isLive('temp-val')) {
     updateEnvCards(scenario);
   }
 
